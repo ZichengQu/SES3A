@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">U-ARGo</string>
+    <!--Zicheng's mapbox token-->
+    <string name="mapbox_access_token">pk.eyJ1IjoiemljaGVuZ3F1IiwiYSI6ImNrOGI0dnA5cjA1MnYzbm1tNDRrNHd4NjQifQ.u7QCJbV8dtkYlk3DEZkrhg</string>
+</resources>
