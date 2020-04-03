@@ -4,4 +4,8 @@
     <string name="mapbox_access_token">pk.eyJ1IjoiemljaGVuZ3F1IiwiYSI6ImNrOGI0dnA5cjA1MnYzbm1tNDRrNHd4NjQifQ.u7QCJbV8dtkYlk3DEZkrhg</string>
     <!--3D Mapbox style, should match with Zicheng's Mapbox token-->
     <string name="styleUrl">mapbox://styles/zichengqu/ck8f7kblh3nzn1intif5sl4iq</string>
+    <!--    need to be finished-->
+    <string name="move_map_around_instruction">test01</string>
+    <string name="route_can_not_be_displayed">route can not be displayed</string>
+    <string name="route_call_failure">route call failure</string>
 </resources>
