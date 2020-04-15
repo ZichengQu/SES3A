@@ -14,13 +14,28 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+
 }
 
 allprojects {
     repositories {
         google()
         jcenter()
-        
+        maven {
+            url 'https://api.mapbox.com/downloads/v1/vision/android/maven'
+
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username project.properties['mapboxMavenUser'] ?: ""
+                password project.properties['mapboxMavenToken'] ?: ""
+            }
+        }
+        //Ensure the mapbox dependency is properly downloaded, support for 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.42.6'
+        maven{
+            url 'https://mapbox.bintray.com/mapbox' //
+        }
     }
 }
 

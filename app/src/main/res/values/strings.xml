@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">U-ARGo</string>
-    <!--Zicheng's mapbox token-->
-    <string name="mapbox_access_token">pk.eyJ1IjoiemljaGVuZ3F1IiwiYSI6ImNrOGI0dnA5cjA1MnYzbm1tNDRrNHd4NjQifQ.u7QCJbV8dtkYlk3DEZkrhg</string>
+    <!--SES3A_Mapbox_token-->
+    <string name="mapbox_access_token" translatable="false">sk.eyJ1IjoiemljaGVuZ3F1IiwiYSI6ImNrOTAzY2h1azF6emkzbmpza25rdDRlMm4ifQ.UW5-_LK_zbxFqq4cjjMIfA</string>
     <!--3D Mapbox style, should match with Zicheng's Mapbox token-->
-    <string name="styleUrl">mapbox://styles/zichengqu/ck8f7kblh3nzn1intif5sl4iq</string>
+    <string name="styleUrl">mapbox://styles/zichengqu/ck8f72yjx0s4q1iqr2e839jia</string>
 </resources>
