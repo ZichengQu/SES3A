@@ -75,8 +75,8 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
 
     // This dummy points will be used to build route. For real world test this needs to be changed to real values for
     // source and target locations.
-    private final Point ROUTE_ORIGIN = Point.fromLngLat(27.654285, 53.928057);
-    private final Point ROUTE_DESTINATION = Point.fromLngLat(27.655637, 53.935712);
+    private final Point ROUTE_ORIGIN = Point.fromLngLat(-33.879520, 151.194502);
+    private final Point ROUTE_DESTINATION = Point.fromLngLat(-33.889531, 151.206090);
 
     @Override
     protected void initViews() {
@@ -111,7 +111,7 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         if (allPermissionsGranted() && !visionManagerWasInit) {
             // Create and start VisionManager.
             VisionManager.create();
-            VisionManager.setModelPerformanceConfig(new Merged(new On(ModelPerformanceMode.DYNAMIC, ModelPerformanceRate.LOW)));
+            VisionManager.setModelPerformanceConfig(new Merged(new On(ModelPerformanceMode.DYNAMIC, ModelPerformanceRate.HIGH)));
             VisionManager.start();
             VisionManager.setVisionEventsListener(new VisionEventsListener() {
                 @Override

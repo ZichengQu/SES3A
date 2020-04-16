@@ -26,8 +26,8 @@
 
         <activity
             android:name=".ArActivity"
-            android:label="AR_EXAMPLE">
-<!--            android:screenOrientation="landscape"-->
+            android:label="AR_EXAMPLE"
+            android:screenOrientation="landscape">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
