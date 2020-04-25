@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 // classes needed to initialize map
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
@@ -62,6 +63,11 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
     // variables needed to initialize navigation
     private Button startButton;
 
+    //Restrict the area bounds displayed.
+    private static final LatLng BOUND_CORNER_NW = new LatLng(-33.879520, 151.194502);
+    private static final LatLng BOUND_CORNER_SE = new LatLng(-33.889531, 151.206090);
+    private static final LatLngBounds RESTRICTED_BOUNDS_AREA = new LatLngBounds.Builder().include(BOUND_CORNER_NW).include(BOUND_CORNER_SE).build();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +84,8 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
         mapboxMap.setStyle(getString(R.string.navigation_guidance_day), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
+                mapboxMap.setLatLngBoundsForCameraTarget(RESTRICTED_BOUNDS_AREA);//Restrict the area bounds displayed.
+
                 enableLocationComponent(style);
 
                 addDestinationIconSymbolLayer(style);
@@ -105,7 +113,7 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
 
                 System.out.println("latitude: "+latitude+", longitude: "+longitude);
                 if(latitude != 0.0d && longitude != 0.0d){
-                    initDestination(-33.879520, 151.194502);
+                    initDestination(latitude, longitude);
                 }
 
             }

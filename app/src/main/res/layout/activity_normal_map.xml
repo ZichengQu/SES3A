@@ -10,9 +10,12 @@
     android:id="@+id/mapView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    mapbox:mapbox_cameraTargetLat="38.9098"
-    mapbox:mapbox_cameraTargetLng="-77.0295"
-    mapbox:mapbox_cameraZoom="12" />
+    mapbox:mapbox_cameraTargetLat="-33.883726"
+    mapbox:mapbox_cameraTargetLng="151.200726"
+    mapbox:mapbox_cameraZoom="16"
+    mapbox:mapbox_cameraZoomMax="16"
+    mapbox:mapbox_cameraZoomMin="14"
+    />
 
 <Button
     android:id="@+id/startButton"
