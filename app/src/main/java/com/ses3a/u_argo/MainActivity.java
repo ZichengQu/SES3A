@@ -38,10 +38,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        final Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        final Button arCamera = findViewById(R.id.arCamera);
+        arCamera.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this,ArActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        final Button normalMap = findViewById(R.id.normalMap);
+        normalMap.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,NormalMap.class);
+
+                Bundle destination = new Bundle();
+                destination.putDouble("latitude",-33.879520);
+                destination.putDouble("longitude",151.194502);
+                intent.putExtra("destination",destination);
+
                 startActivity(intent);
             }
         });

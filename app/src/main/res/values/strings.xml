@@ -4,7 +4,10 @@
     <string name="mapbox_access_token" translatable="false">sk.eyJ1IjoiemljaGVuZ3F1IiwiYSI6ImNrOTAzY2h1azF6emkzbmpza25rdDRlMm4ifQ.UW5-_LK_zbxFqq4cjjMIfA</string>
     <!--3D Mapbox style, should match with Zicheng's Mapbox token -->
     <!--903 is brown color, 93 is purple color, 8f7 is green-->
-<!--    <string name="styleUrl">mapbox://styles/zichengqu/ck903lpnx0zks1inqiis1b6ya</string>-->
+    <!--    <string name="styleUrl">mapbox://styles/zichengqu/ck903lpnx0zks1inqiis1b6ya</string>-->
     <string name="styleUrl">mapbox://styles/zichengqu/ck93gpqhx1vm81itdbhittr62</string>
-<!--    <string name="styleUrl">mapbox://styles/zichengqu/ck8f7kblh3nzn1intif5sl4iq</string>-->
+    <!--    <string name="styleUrl">mapbox://styles/zichengqu/ck8f7kblh3nzn1intif5sl4iq</string>-->
+
+    <string name="user_location_permission_explanation">This app needs location permissions to show its functionality.</string>
+    <string name="user_location_permission_not_granted">You didn\'t grant location permissions.</string>
 </resources>
