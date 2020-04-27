@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Record_1</string>
+    
+    <string name="start_name">Start Point</string>
+    <string name="end_name">Building</string>
+    
+</resources>
