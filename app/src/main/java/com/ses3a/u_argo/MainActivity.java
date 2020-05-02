@@ -1,26 +1,39 @@
 package com.ses3a.u_argo;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.View;
 import android.widget.Button;
 
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.FillLayer;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import java.util.List;
 
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.geometry.LatLngBounds;
-
-
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+/**
+ * Use the query feature to select a building, get its geometry, and draw a polygon highlighting it.
+ */
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,
+        MapboxMap.OnMapClickListener {
 
     private MapView mapView;
+    private MapboxMap mapboxMap;
+    private LatLng startPoint;
 
     private static final LatLng BOUND_CORNER_NW = new LatLng(-33.879520, 151.194502);
     private static final LatLng BOUND_CORNER_SE = new LatLng(-33.889531, 151.206090);
@@ -33,7 +46,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Mapbox access token is configured here. This needs to be called either in your application
         // object or in the same activity which contains the mapview.
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
+
+        // This contains the MapView in XML and needs to be called after the access token is configured.
         setContentView(R.layout.activity_main);
+
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
@@ -52,26 +68,57 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Intent intent=new Intent(MainActivity.this,NormalMap.class);
 
                 Bundle destination = new Bundle();
-                destination.putDouble("latitude",-33.879520);
-                destination.putDouble("longitude",151.194502);
+                destination.putDouble("latitude", startPoint.getLatitude());
+                destination.putDouble("longitude", startPoint.getLongitude());
                 intent.putExtra("destination",destination);
 
                 startActivity(intent);
             }
         });
 
-
-
     }
 
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
-        mapboxMap.setStyle(new Style.Builder().fromUri(getString(R.string.styleUrl)), new Style.OnStyleLoaded() {
+        MainActivity.this.mapboxMap = mapboxMap;
+        mapboxMap.setStyle(Style.OUTDOORS, new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 mapboxMap.setLatLngBoundsForCameraTarget(RESTRICTED_BOUNDS_AREA);
+                style.addSource(new GeoJsonSource("source-id"));
+
+                style.addLayer(new FillLayer("layer-id", "source-id").withProperties(
+                        PropertyFactory.fillColor(Color.parseColor("#8A8ACB"))
+                ));
+
+                mapboxMap.addOnMapClickListener(MainActivity.this);
             }
         });
+    }
+
+    @Override
+    public boolean onMapClick(@NonNull LatLng point) {
+        mapboxMap.getStyle(new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                final PointF finalPoint = mapboxMap.getProjection().toScreenLocation(point);
+                List<Feature> features = mapboxMap.queryRenderedFeatures(finalPoint, "building");
+                if (features.size() > 0) {
+                    GeoJsonSource selectedBuildingSource = style.getSourceAs("source-id");
+                    if (selectedBuildingSource != null) {
+                        selectedBuildingSource.setGeoJson(FeatureCollection.fromFeatures(features));
+                        startPoint = point;
+                    }
+                }
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
     }
 
     @Override
@@ -81,27 +128,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         mapView.onStop();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
     }
 
     @Override
@@ -111,13 +146,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
+        if (mapboxMap != null) {
+            mapboxMap.removeOnMapClickListener(this);
+        }
         mapView.onDestroy();
     }
 
-
-
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+}
 
 }
