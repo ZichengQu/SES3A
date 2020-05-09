@@ -97,9 +97,22 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         double latitude = point.getDouble("latitude");
         double longitude = point.getDouble("longitude");
 
-        System.out.println("latitude: "+latitude+", longitude: "+longitude);
-
         ROUTE_DESTINATION = Point.fromLngLat(longitude, latitude);
+
+        //Button to 2D navigation with destination
+        final Button normalMap = findViewById(R.id.normalMap);
+        normalMap.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent=new Intent(ArActivity.this,NormalMap.class);
+
+                Bundle destination = new Bundle();
+                destination.putDouble("latitude", ROUTE_DESTINATION.latitude());
+                destination.putDouble("longitude", ROUTE_DESTINATION.longitude());
+                intent.putExtra("destination",destination);
+
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

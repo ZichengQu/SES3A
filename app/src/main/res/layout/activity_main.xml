@@ -34,26 +34,20 @@
         mapbox:mapbox_cameraTilt="45"
         >
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_gravity="bottom"
-            android:gravity="center">
-        <Button
-            android:id="@+id/arCamera"
-            android:layout_width="180sp"
-            android:layout_height="match_parent"
-            android:text="arCamera"
-            android:layout_margin="10sp"/>
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="70dp"-->
+<!--            android:layout_gravity="bottom"-->
+<!--            android:gravity="center">-->
+<!--        <Button-->
+<!--            android:id="@+id/arCamera"-->
+<!--            android:layout_width="180sp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:text="arCamera"-->
+<!--            android:layout_margin="10sp"/>-->
 
-        <Button
-            android:id="@+id/normalMap"
-            android:layout_width="180sp"
-            android:layout_height="match_parent"
-            android:text="normalMap"
-            android:layout_toRightOf="@id/arCamera"
-            android:layout_margin="10sp"/>
-        </RelativeLayout>
+
+<!--        </RelativeLayout>-->
     </com.mapbox.mapboxsdk.maps.MapView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

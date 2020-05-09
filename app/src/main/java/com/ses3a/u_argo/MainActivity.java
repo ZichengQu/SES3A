@@ -54,33 +54,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        final Button arCamera = findViewById(R.id.arCamera);
-        arCamera.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this,ArActivity.class);
+//        final Button arCamera = findViewById(R.id.arCamera);
+//        arCamera.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                Intent intent=new Intent(MainActivity.this,ArActivity.class);
+//
+//                Bundle destination = new Bundle();
+//                destination.putDouble("latitude", startPoint.getLatitude());
+//                destination.putDouble("longitude", startPoint.getLongitude());
+//                intent.putExtra("destination",destination);
+//
+//                startActivity(intent);
+//            }
+//        });
 
-                Bundle destination = new Bundle();
-                destination.putDouble("latitude", startPoint.getLatitude());
-                destination.putDouble("longitude", startPoint.getLongitude());
-                intent.putExtra("destination",destination);
-
-                startActivity(intent);
-            }
-        });
-
-        final Button normalMap = findViewById(R.id.normalMap);
-        normalMap.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this,NormalMap.class);
-
-                Bundle destination = new Bundle();
-                destination.putDouble("latitude", startPoint.getLatitude());
-                destination.putDouble("longitude", startPoint.getLongitude());
-                intent.putExtra("destination",destination);
-
-                startActivity(intent);
-            }
-        });
+//        final Button normalMap = findViewById(R.id.normalMap);
+//        normalMap.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                Intent intent=new Intent(MainActivity.this,NormalMap.class);
+//
+//                Bundle destination = new Bundle();
+//                destination.putDouble("latitude", startPoint.getLatitude());
+//                destination.putDouble("longitude", startPoint.getLongitude());
+//                intent.putExtra("destination",destination);
+//
+//                startActivity(intent);
+//            }
+//        });
 
     }
 
@@ -118,6 +118,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
+
+        //Navigate to the AR Navigation page
+        Intent intent=new Intent(MainActivity.this,ArActivity.class);
+
+        Bundle destination = new Bundle();
+        destination.putDouble("latitude", startPoint.getLatitude());
+        destination.putDouble("longitude", startPoint.getLongitude());
+        intent.putExtra("destination",destination);
+
+        startActivity(intent);
+
         return true;
     }
 
