@@ -10,4 +10,7 @@
 
     <string name="user_location_permission_explanation">This app needs location permissions to show its functionality.</string>
     <string name="user_location_permission_not_granted">You didn\'t grant location permissions.</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="welcome_message">welcome to</string>
 </resources>
