@@ -1,7 +1,11 @@
 package com.ses3a.u_argo;
 
+import android.content.Intent;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.Looper;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,9 +81,26 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
     // This dummy points will be used to build route. For real world test this needs to be changed to real values for
     // source and target locations.
     private final Point ROUTE_ORIGIN = Point.fromLngLat(151.040637, -33.910701);
-    private final Point ROUTE_DESTINATION = Point.fromLngLat(151.039349, -33.911610);
+
+    private Point ROUTE_DESTINATION;
 //    ori:   151.039349, -33.911610
 //    des:   151.040637, -33.910701
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //Init the location picker when switching into the AR navigation.
+        Intent intent = getIntent();
+        Bundle point = intent.getBundleExtra("destination");
+        double latitude = point.getDouble("latitude");
+        double longitude = point.getDouble("longitude");
+
+        System.out.println("latitude: "+latitude+", longitude: "+longitude);
+
+        ROUTE_DESTINATION = Point.fromLngLat(longitude, latitude);
+    }
 
     @Override
     protected void initViews() {
