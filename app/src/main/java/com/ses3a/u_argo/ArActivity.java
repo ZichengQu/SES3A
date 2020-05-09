@@ -10,6 +10,7 @@ import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
+import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.LegStep;
@@ -75,8 +76,10 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
 
     // This dummy points will be used to build route. For real world test this needs to be changed to real values for
     // source and target locations.
-    private final Point ROUTE_ORIGIN = Point.fromLngLat(-33.879520, 151.194502);
-    private final Point ROUTE_DESTINATION = Point.fromLngLat(-33.889531, 151.206090);
+    private final Point ROUTE_ORIGIN = Point.fromLngLat(151.040637, -33.910701);
+    private final Point ROUTE_DESTINATION = Point.fromLngLat(151.039349, -33.911610);
+//    ori:   151.039349, -33.911610
+//    des:   151.040637, -33.910701
 
     @Override
     protected void initViews() {
@@ -199,7 +202,7 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
             locationCallback = new LocationEngineCallback<LocationEngineResult>() {
                 @Override
                 public void onSuccess(LocationEngineResult result) {
-
+                    initDirectionsRoute(result.getLastLocation());
                 }
 
                 @Override
@@ -208,13 +211,15 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
                 }
             };
 
+
+
             try {
                 locationEngine.requestLocationUpdates(arLocationEngineRequest, locationCallback, Looper.getMainLooper());
             } catch (SecurityException se) {
                 VisionLogger.Companion.e(TAG, se.toString());
             }
 
-            initDirectionsRoute();
+//            initDirectionsRoute();
 
             // Route need to be reestablished if off route happens.
             mapboxNavigation.addOffRouteListener(this);
@@ -236,12 +241,20 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         }
     }
 
-    private void initDirectionsRoute() {
+    private void initDirectionsRoute(Location location) {
         // Get route from predefined points.
+        System.out.println("Location::::::::::::::::::::::::::::::::::::");
+        System.out.println(location);
+
+        double bearing = Float.valueOf(location.getBearing()).doubleValue();
+        double tolerance = 45d;
+
         NavigationRoute.builder(this)
                 .accessToken(getString(R.string.mapbox_access_token))
-                .origin(ROUTE_ORIGIN)
+                .origin(ROUTE_ORIGIN, bearing, tolerance)
                 .destination(ROUTE_DESTINATION)
+                .profile(DirectionsCriteria.PROFILE_WALKING)
+                .voiceUnits(DirectionsCriteria.METRIC)
                 .build()
                 .getRoute(new Callback<DirectionsResponse>() {
                     @Override
