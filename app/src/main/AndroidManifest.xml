@@ -30,6 +30,7 @@
             android:label="AR_EXAMPLE"
             android:screenOrientation="landscape" />
         <activity android:name=".NormalMap" />
+        <activity android:name=".HistoryActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
