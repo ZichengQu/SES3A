@@ -2,10 +2,16 @@ package com.ses3a.u_argo;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
+
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Locale;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.widget.Toast;
 
 // classes needed to initialize map
@@ -34,7 +40,10 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 
 // classes to calculate a route
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
+import com.mapbox.services.android.navigation.ui.v5.OnNavigationReadyCallback;
+import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
+import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
@@ -47,9 +56,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationWalkingOptions;
 
 
-public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, MapboxMap.OnMapClickListener, PermissionsListener {
+public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, MapboxMap.OnMapClickListener, PermissionsListener, NavigationListener, OnNavigationReadyCallback {
     // variables for adding location layer
     private MapView mapView;
     private MapboxMap mapboxMap;
@@ -62,11 +72,18 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
     private NavigationMapRoute navigationMapRoute;
     // variables needed to initialize navigation
     private Button startButton;
+    private MapboxNavigation navigation;
 
     //Restrict the area bounds displayed.
     private static final LatLng BOUND_CORNER_NW = new LatLng(-33.879520, 151.194502);
     private static final LatLng BOUND_CORNER_SE = new LatLng(-33.889531, 151.206090);
     private static final LatLngBounds RESTRICTED_BOUNDS_AREA = new LatLngBounds.Builder().include(BOUND_CORNER_NW).include(BOUND_CORNER_SE).build();
+
+    private Point originPoint;
+    private Point destinationPoint;
+
+    final double[] distance = {0.0};
+    final double[] duration = {0.0};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +93,9 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        navigation = new MapboxNavigation(this, getString(R.string.mapbox_access_token));
+
     }
 
     @Override
@@ -95,13 +115,17 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
                 startButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean simulateRoute = true;
+                        boolean simulateRoute = false;
                         NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                                 .directionsRoute(currentRoute)
                                 .shouldSimulateRoute(simulateRoute)
                                 .build();
+
                         // Call this method with Context from within an Activity
                         NavigationLauncher.startNavigation(NormalMap.this, options);
+
+
+                        getDistance(originPoint, destinationPoint);
                     }
                 });
 
@@ -111,13 +135,28 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
                 double latitude = point.getDouble("latitude");
                 double longitude = point.getDouble("longitude");
 
-                System.out.println("latitude: "+latitude+", longitude: "+longitude);
+                //System.out.println("latitude: "+latitude+", longitude: "+longitude);
                 if(latitude != 0.0d && longitude != 0.0d){
                     initDestination(latitude, longitude);
                 }
-
             }
         });
+    }
+
+    private void initDestination(double latitude, double longitude){
+
+        destinationPoint = Point.fromLngLat(longitude, latitude);
+        originPoint = Point.fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
+                locationComponent.getLastKnownLocation().getLatitude());
+
+        GeoJsonSource source = mapboxMap.getStyle().getSourceAs("destination-source-id");
+        if (source != null) {
+            source.setGeoJson(Feature.fromGeometry(destinationPoint));
+        }
+
+        getRoute(originPoint, destinationPoint);
+        startButton.setEnabled(true);
+        startButton.setBackgroundResource(R.color.mapboxBlue);
     }
 
     private void addDestinationIconSymbolLayer(@NonNull Style loadedMapStyle) {
@@ -138,8 +177,8 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
 
-        Point destinationPoint = Point.fromLngLat(point.getLongitude(), point.getLatitude());
-        Point originPoint = Point.fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
+        destinationPoint = Point.fromLngLat(point.getLongitude(), point.getLatitude());
+        originPoint = Point.fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
                 locationComponent.getLastKnownLocation().getLatitude());
 
         GeoJsonSource source = mapboxMap.getStyle().getSourceAs("destination-source-id");
@@ -158,6 +197,8 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
                 .accessToken(Mapbox.getAccessToken())
                 .origin(origin)
                 .destination(destination)
+                .language(Locale.ENGLISH)
+                .walkingOptions(NavigationWalkingOptions.builder().build())
                 .build()
                 .getRoute(new Callback<DirectionsResponse>() {
                     @Override
@@ -173,6 +214,9 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
                         }
 
                         currentRoute = response.body().routes().get(0);
+                        Log.d(TAG, "onResponse: currentRoute: "+ currentRoute);
+                        Log.d(TAG, "onResponse: response.body(): "+response.body());
+                        Log.d(TAG, "onResponse: distance: "+ response.body().routes().get(0).distance());
 
                         // Draw the route on the map
                         if (navigationMapRoute != null) {
@@ -190,6 +234,57 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
                 });
     }
 
+    private void getDistance(Point origin, Point destination) {
+        NavigationRoute.builder(this)
+                .accessToken(Mapbox.getAccessToken())
+                .origin(origin)
+                .destination(destination)
+                .language(Locale.ENGLISH)
+                .build()
+                .getRoute(new Callback<DirectionsResponse>() {
+                    @Override
+                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                        // You can get the generic HTTP info about the response
+                        Log.d(TAG, "Response code: " + response.code());
+                        if (response.body() == null) {
+                            Log.e(TAG, "No routes found, make sure you set the right user and access token.");
+                            return;
+                        } else if (response.body().routes().size() < 1) {
+                            Log.e(TAG, "No routes found");
+                            return;
+                        }
+                        Log.d(TAG, "getDistance: body" + response.body());
+                        distance[0] = response.body().routes().get(0).distance();
+                        duration[0] = response.body().routes().get(0).duration();
+                        Log.d(TAG, "getDistance: distance: " + distance[0]);
+                    }
+
+                    @Override
+                    public void onFailure(Call<DirectionsResponse> call, Throwable throwable) {
+                        Log.e(TAG, "Error: " + throwable.getMessage());
+                    }
+                });
+    }
+
+    /**
+     * Calculate calories through weight, distance and duration.
+     * @return Calories in KCal
+     */
+    private double getCaloriesConsumed(){
+        double k;
+        double rate = 3.6;  // 1m/s = 3.6km/h
+        double weight = 60; //60kg
+        if( (distance[0] / duration[0]) * rate <= 8){ // <= 8km/h
+            k = 0.1355;
+        }else if ( (distance[0] / duration[0]) * rate <=12){ // <= 12km/h
+            k = 0.1797;
+        }else { // > 12km/h
+            k = 0.1875;
+        }
+        double kCal = weight * (duration[0] / 60) * k;
+        return Double.parseDouble(new DecimalFormat("#.00").format(kCal)); // Return the calories in KCal.
+    }
+
     @SuppressWarnings( {"MissingPermission"})
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
         // Check if permissions are enabled and if not request
@@ -200,7 +295,7 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
             locationComponent.activateLocationComponent(this, loadedMapStyle);
             locationComponent.setLocationComponentEnabled(true);
             // Set the component's camera mode
-            locationComponent.setCameraMode(CameraMode.TRACKING);
+            locationComponent.setCameraMode(CameraMode.TRACKING_GPS);
         } else {
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this);
@@ -269,19 +364,23 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
         mapView.onLowMemory();
     }
 
-    private void initDestination(double latitude, double longitude){
+    @Override
+    public void onCancelNavigation() {
+        Log.d(TAG, "onNavigation: Cancelled");
+    }
 
-        Point destinationPoint = Point.fromLngLat(longitude, latitude);
-        Point originPoint = Point.fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
-                locationComponent.getLastKnownLocation().getLatitude());
+    @Override
+    public void onNavigationFinished() {
+        Log.d(TAG, "onNavigation: Finished");
+    }
 
-        GeoJsonSource source = mapboxMap.getStyle().getSourceAs("destination-source-id");
-        if (source != null) {
-            source.setGeoJson(Feature.fromGeometry(destinationPoint));
-        }
+    @Override
+    public void onNavigationRunning() {
+        Log.d(TAG, "onNavigation: Running");
+    }
 
-        getRoute(originPoint, destinationPoint);
-        startButton.setEnabled(true);
-        startButton.setBackgroundResource(R.color.mapboxBlue);
+    @Override
+    public void onNavigationReady(boolean isRunning) {
+        Log.d(TAG, "onNavigation: Ready");
     }
 }
