@@ -4,12 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".NormalMap">
+    tools:context=".NormalMap"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include
+        android:id="@+id/titlebar"
+        layout="@layout/layout_custom_actionbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 <com.mapbox.mapboxsdk.maps.MapView
     android:id="@+id/mapView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="48dp"
     mapbox:mapbox_cameraTargetLat="-33.883726"
     mapbox:mapbox_cameraTargetLng="151.200726"
     mapbox:mapbox_cameraZoom="16"
@@ -23,7 +32,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
     android:layout_marginLeft="16dp"
-    android:layout_marginTop="16dp"
+    android:layout_marginTop="66dp"
     android:layout_marginEnd="16dp"
     android:background="@color/mapboxGrayLight"
     android:enabled="false"
