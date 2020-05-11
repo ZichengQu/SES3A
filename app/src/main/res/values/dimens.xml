@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="tip_icon_width">20dp</dimen>
+    <dimen name="icon_width">16dp</dimen>
+
+    <dimen name="address_size">20sp</dimen>
+
+</resources>

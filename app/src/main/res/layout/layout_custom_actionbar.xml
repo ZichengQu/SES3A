@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="45sp"
+    android:layout_height="48sp"
     android:gravity="center"
     android:background="#3A3A3A">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_return"
+        android:onClick="backClick"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -13,7 +20,13 @@
         android:gravity="center"
         android:text="@string/app_name"
         android:textColor="@color/mapboxWhite"
-        android:textSize="24sp" />
+        android:textSize="28sp" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_home"
+        android:onClick="homeClick"/>
 
 </LinearLayout>
