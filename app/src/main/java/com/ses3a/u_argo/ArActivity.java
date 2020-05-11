@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -53,6 +54,8 @@ import com.mapbox.vision.performance.ModelPerformanceMode;
 import com.mapbox.vision.performance.ModelPerformanceRate;
 import com.mapbox.vision.utils.VisionLogger;
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -81,6 +84,10 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
     // This dummy points will be used to build route. For real world test this needs to be changed to real values for
     // source and target locations.
     private final Point ROUTE_ORIGIN = Point.fromLngLat(151.040637, -33.910701);
+
+    //Calculate calories
+    final double[] distance = {0.0};
+    final double[] duration = {0.0};
 
     private Point ROUTE_DESTINATION;
 //    ori:   151.039349, -33.911610
@@ -142,6 +149,8 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         super.onStop();
         stopVisionManager();
         stopNavigation();
+        //Log.d(TAG, "onZCQStop: " + getCaloriesConsumed());
+
     }
 
     private void startVisionManager() {
@@ -299,6 +308,11 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
 
                         // Start navigation session with retrieved route.
                         DirectionsRoute route = response.body().routes().get(0);
+
+                        //Get distance and duration during the navigation
+                        distance[0] = response.body().routes().get(0).distance();
+                        duration[0] = response.body().routes().get(0).duration();
+
                         mapboxNavigation.startNavigation(route);
 
                         // Set route progress.
@@ -348,6 +362,7 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
 
     @Override
     public void onProgressChange(Location location, RouteProgress routeProgress) {
+        Log.d(TAG, "onZCQProgressChange: " + routeProgress);
         lastRouteProgress = routeProgress;
     }
 
@@ -434,5 +449,27 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
             default:
                 return ManeuverType.None;
         }
+    }
+
+    /**
+     * Calculate calories through weight, distance and duration.
+     * @return Calories in KCal
+     */
+    private double getCaloriesConsumed(){
+        double k;
+        double rate = 3.6;  // 1m/s = 3.6km/h
+        double weight = 60; //60kg
+        if( (distance[0] / duration[0]) * rate <= 8){ // <= 8km/h
+            k = 0.1355;
+        }else if ( (distance[0] / duration[0]) * rate <=12){ // <= 12km/h
+            k = 0.1797;
+        }else { // > 12km/h
+            k = 0.1875;
+        }
+        double kCal = weight * (duration[0] / 60) * k;
+        Log.d(TAG, "onZCQCaloriesConsumed: distance: " + distance[0]);
+        Log.d(TAG, "onZCQCaloriesConsumed: duration: " + duration[0]);
+        Log.d(TAG, "onZCQCaloriesConsumed: kcal: " + kCal);
+        return Double.parseDouble(new DecimalFormat("#.00").format(kCal)); // Return the calories in KCal.
     }
 }
