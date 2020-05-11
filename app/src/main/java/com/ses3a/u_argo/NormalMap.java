@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 // classes needed to initialize map
+import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -240,6 +241,7 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
                 .origin(origin)
                 .destination(destination)
                 .language(Locale.ENGLISH)
+                .profile(DirectionsCriteria.PROFILE_WALKING)
                 .build()
                 .getRoute(new Callback<DirectionsResponse>() {
                     @Override
@@ -253,6 +255,8 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
                             Log.e(TAG, "No routes found");
                             return;
                         }
+
+                        //Get distance and duration during the navigation
                         Log.d(TAG, "getDistance: body" + response.body());
                         distance[0] = response.body().routes().get(0).distance();
                         duration[0] = response.body().routes().get(0).duration();
