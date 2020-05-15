@@ -1,6 +1,8 @@
 package com.ses3a.u_argo;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.Bundle;
@@ -19,10 +21,15 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.ses3a.u_argo.tools.LocationUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,6 +114,49 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 ));
 
                 mapboxMap.addOnMapClickListener(MainActivity.this);
+
+                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_red);
+                mapboxMap.getStyle().addImage("my-marker",bm);
+
+                SymbolManager symbolManager = new SymbolManager(mapView, mapboxMap, style);
+
+                symbolManager.setIconAllowOverlap(true);
+                symbolManager.setTextAllowOverlap(true);
+                symbolManager.setIconIgnorePlacement(true);
+
+                symbolManager.create(new SymbolOptions()
+                        .withLatLng(new LatLng(-33.88358927248891, 151.20111371633055))
+                        .withIconImage("my-marker")
+                        .withIconSize(0.5f)
+                        .withTextField("Building 1")
+                        .withIconOffset(new Float[] {0f,-1.5f})
+                        .withTextHaloColor("rgba(255, 255, 255, 100)")
+                        .withTextHaloWidth(5.0f)
+                        .withTextAnchor("top")
+                        .withTextOffset(new Float[] {0f, 1.5f})
+                );
+                symbolManager.create(new SymbolOptions()
+                        .withLatLng(new LatLng(-33.88094231843857, 151.2013071351103))
+                        .withIconImage("my-marker")
+                        .withIconSize(0.5f)
+                        .withTextField("Building 8")
+                        .withIconOffset(new Float[] {0f,-1.5f})
+                        .withTextHaloColor("rgba(255, 255, 255, 100)")
+                        .withTextHaloWidth(5.0f)
+                        .withTextAnchor("top")
+                        .withTextOffset(new Float[] {0f, 1.5f})
+                );
+                symbolManager.create(new SymbolOptions()
+                        .withLatLng(new LatLng(-33.88350025713034, 151.1989419327386))
+                        .withIconImage("my-marker")
+                        .withIconSize(0.5f)
+                        .withTextField("Building 10")
+                        .withIconOffset(new Float[] {0f,-1.5f})
+                        .withTextHaloColor("rgba(255, 255, 255, 100)")
+                        .withTextHaloWidth(5.0f)
+                        .withTextAnchor("top")
+                        .withTextOffset(new Float[] {0f, 1.5f})
+                );
             }
         });
     }
@@ -123,20 +173,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (selectedBuildingSource != null) {
                         selectedBuildingSource.setGeoJson(FeatureCollection.fromFeatures(features));
                         startPoint = point;
+                        //Navigate to the AR Navigation page
+                        Intent intent=new Intent(MainActivity.this, ArActivity.class);
+
+                        Bundle destination = new Bundle();
+                        destination.putDouble("latitude", startPoint.getLatitude());
+                        destination.putDouble("longitude", startPoint.getLongitude());
+                        intent.putExtra("destination",destination);
+
+                        startActivity(intent);
                     }
                 }
             }
         });
-
-        //Navigate to the AR Navigation page
-        Intent intent=new Intent(MainActivity.this,ArActivity.class);
-
-        Bundle destination = new Bundle();
-        destination.putDouble("latitude", startPoint.getLatitude());
-        destination.putDouble("longitude", startPoint.getLongitude());
-        intent.putExtra("destination",destination);
-
-        startActivity(intent);
 
         return true;
     }
@@ -185,5 +234,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
+
+
 }
 

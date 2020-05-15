@@ -6,6 +6,9 @@ import android.location.Location;
 import android.os.Bundle;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,6 +61,9 @@ import android.view.View;
 import android.widget.Button;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationWalkingOptions;
+import com.ses3a.u_argo.eneities.History;
+import com.ses3a.u_argo.tools.LocationUtil;
+import com.ses3a.u_argo.tools.SharedPreferenceUtil;
 
 
 public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, MapboxMap.OnMapClickListener, PermissionsListener, NavigationListener, OnNavigationReadyCallback {
@@ -124,7 +130,6 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
 
                         // Call this method with Context from within an Activity
                         NavigationLauncher.startNavigation(NormalMap.this, options);
-
 
                         getDistance(originPoint, destinationPoint);
                     }

@@ -23,6 +23,7 @@ import com.mapbox.api.directions.v5.models.RouteLeg;
 import com.mapbox.core.constants.Constants;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.utils.PolylineUtils;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
@@ -53,10 +54,16 @@ import com.mapbox.vision.performance.ModelPerformanceConfig.Merged;
 import com.mapbox.vision.performance.ModelPerformanceMode;
 import com.mapbox.vision.performance.ModelPerformanceRate;
 import com.mapbox.vision.utils.VisionLogger;
+import com.ses3a.u_argo.eneities.History;
+import com.ses3a.u_argo.tools.LocationUtil;
+import com.ses3a.u_argo.tools.SharedPreferenceUtil;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -93,6 +100,9 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
 //    ori:   151.039349, -33.911610
 //    des:   151.040637, -33.910701
 
+    //history util
+    ArrayList<History> historyList;
+    SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +115,22 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         double longitude = point.getDouble("longitude");
 
         ROUTE_DESTINATION = Point.fromLngLat(longitude, latitude);
+
+        //add history
+        LatLng op = new LatLng(ROUTE_ORIGIN.latitude(), ROUTE_ORIGIN.longitude());
+        LatLng dp = new LatLng(ROUTE_DESTINATION.latitude(), ROUTE_DESTINATION.longitude());
+        String startBuilding = LocationUtil.getBuildingName(op);
+        String destinationBuilding = LocationUtil.getBuildingName(dp);
+        Date startDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String startDateString = sdf.format(startDate);
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //fake!!!
+        //need the time when finished.
+        String duration = "1h";
+        String cal = getCaloriesConsumed() + "k";
+        History history = new History(startBuilding, destinationBuilding, startDateString, duration, cal);
+        saveHistory(history);
 
         //Button to 2D navigation with destination
         final Button normalMap = findViewById(R.id.normalMap);
@@ -471,5 +497,16 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         Log.d(TAG, "onZCQCaloriesConsumed: duration: " + duration[0]);
         Log.d(TAG, "onZCQCaloriesConsumed: kcal: " + kCal);
         return Double.parseDouble(new DecimalFormat("#.00").format(kCal)); // Return the calories in KCal.
+    }
+
+    private void saveHistory(History history) {
+        String historyString = (String) (sharedPreferenceUtil.get("history", "history", ArActivity.this));
+        if (historyString == null) {
+            historyList = new ArrayList<>();
+        } else {
+            historyList = (ArrayList<History>) SharedPreferenceUtil.String2Object(historyString);
+        }
+        historyList.add(history);
+        sharedPreferenceUtil.save("history", "history", SharedPreferenceUtil.Object2String(historyList), ArActivity.this);
     }
 }
