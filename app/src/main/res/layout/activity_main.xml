@@ -67,17 +67,37 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="80dp"
             android:layout_margin="10dp"
             android:layout_gravity="bottom"
             android:gravity="right">
 
+<!--            <Button-->
+<!--                android:id="@+id/btn_history"-->
+<!--                android:layout_width="120sp"-->
+<!--                android:layout_height="50sp"-->
+<!--                android:text="history"-->
+<!--                android:layout_margin="10sp"/>-->
+
             <Button
                 android:id="@+id/btn_history"
-                android:layout_width="120sp"
-                android:layout_height="50sp"
-                android:text="history"
-                android:layout_margin="10sp"/>
+                android:layout_width="60sp"
+                android:layout_height="60sp"
+                android:layout_margin="10sp"
+                android:background="@drawable/circle"/>
+
+            <ImageView
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:layout_alignStart="@+id/btn_history"
+                android:layout_alignTop="@+id/btn_history"
+                android:layout_alignEnd="@+id/btn_history"
+                android:layout_alignBottom="@+id/btn_history"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/ic_history" />
         </RelativeLayout>
 
     </com.mapbox.mapboxsdk.maps.MapView>
