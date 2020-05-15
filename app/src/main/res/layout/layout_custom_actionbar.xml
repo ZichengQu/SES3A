@@ -6,6 +6,7 @@
     android:background="#3A3A3A">
 
     <ImageView
+        android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -23,6 +24,7 @@
         android:textSize="28sp" />
 
     <ImageView
+        android:id="@+id/home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
