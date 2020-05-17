@@ -14,7 +14,7 @@
     mapbox:mapbox_cameraTargetLng="151.200726"
     mapbox:mapbox_cameraZoom="16"
     mapbox:mapbox_cameraZoomMax="16"
-    mapbox:mapbox_cameraZoomMin="14"
+    mapbox:mapbox_cameraZoomMin="10"
     />
 
 <Button

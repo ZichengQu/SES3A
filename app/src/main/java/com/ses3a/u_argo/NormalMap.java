@@ -111,7 +111,7 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
         mapboxMap.setStyle(getString(R.string.navigation_guidance_day), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
-                mapboxMap.setLatLngBoundsForCameraTarget(RESTRICTED_BOUNDS_AREA);//Restrict the area bounds displayed.
+                //mapboxMap.setLatLngBoundsForCameraTarget(RESTRICTED_BOUNDS_AREA);//Restrict the area bounds displayed.
 
                 enableLocationComponent(style);
 
@@ -122,7 +122,7 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
                 startButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean simulateRoute = false;
+                        boolean simulateRoute = true;
                         NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                                 .directionsRoute(currentRoute)
                                 .shouldSimulateRoute(simulateRoute)
