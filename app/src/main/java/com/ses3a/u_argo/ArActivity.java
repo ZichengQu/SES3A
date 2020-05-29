@@ -88,6 +88,8 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
     private boolean visionManagerWasInit = false;
     private boolean navigationWasStarted = false;
 
+    boolean flag = true;
+
     // This dummy points will be used to build route. For real world test this needs to be changed to real values for
     // source and target locations.
     private final Point ROUTE_ORIGIN = Point.fromLngLat(151.040637, -33.910701);
@@ -101,7 +103,6 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
 //    des:   151.040637, -33.910701
 
     //history util
-    ArrayList<History> historyList;
     SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil();
 
     @Override
@@ -124,10 +125,7 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         Date startDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String startDateString = sdf.format(startDate);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //fake!!!
-        //need the time when finished.
-        String duration = "1h";
+        String duration = "~";
         String cal = getCaloriesConsumed() + "k";
         History history = new History(startBuilding, destinationBuilding, startDateString, duration, cal);
         saveHistory(history);
@@ -142,6 +140,7 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
                 destination.putDouble("latitude", ROUTE_DESTINATION.latitude());
                 destination.putDouble("longitude", ROUTE_DESTINATION.longitude());
                 intent.putExtra("destination",destination);
+                flag = false;
 
                 startActivity(intent);
             }
@@ -176,7 +175,6 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         stopVisionManager();
         stopNavigation();
         //Log.d(TAG, "onZCQStop: " + getCaloriesConsumed());
-
     }
 
     private void startVisionManager() {
@@ -500,13 +498,6 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
     }
 
     private void saveHistory(History history) {
-        String historyString = (String) (sharedPreferenceUtil.get("history", "history", ArActivity.this));
-        if (historyString == null) {
-            historyList = new ArrayList<>();
-        } else {
-            historyList = (ArrayList<History>) SharedPreferenceUtil.String2Object(historyString);
-        }
-        historyList.add(history);
-        sharedPreferenceUtil.save("history", "history", SharedPreferenceUtil.Object2String(historyList), ArActivity.this);
+        sharedPreferenceUtil.save("historyInstance", "historyInstance", SharedPreferenceUtil.Object2String(history), ArActivity.this);
     }
 }

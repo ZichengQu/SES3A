@@ -27,9 +27,14 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.ses3a.u_argo.eneities.History;
 import com.ses3a.u_argo.tools.LocationUtil;
+import com.ses3a.u_argo.tools.SharedPreferenceUtil;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private MapboxMap mapboxMap;
     private LatLng startPoint;
+
+    ArrayList<History> historyList;
+    SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil();
 
     private static final LatLng BOUND_CORNER_NW = new LatLng(-33.879520, 151.194502);
     private static final LatLng BOUND_CORNER_SE = new LatLng(-33.889531, 151.206090);
@@ -173,8 +181,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (selectedBuildingSource != null) {
                         selectedBuildingSource.setGeoJson(FeatureCollection.fromFeatures(features));
                         startPoint = point;
+
                         //Navigate to the AR Navigation page
-                        Intent intent=new Intent(MainActivity.this, ArActivity.class);
+                        Intent intent = new Intent(MainActivity.this, ArActivity.class);
 
                         Bundle destination = new Bundle();
                         destination.putDouble("latitude", startPoint.getLatitude());
@@ -235,6 +244,42 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onSaveInstanceState(outState);
     }
 
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        String historyInstance = (String) (sharedPreferenceUtil.get("historyInstance", "historyInstance", MainActivity.this));
+        History history;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        if (historyInstance != null) {
+            history = (History) SharedPreferenceUtil.String2Object(historyInstance);
+            Date endTime = new Date();
+            try {
+                Date startTime = df.parse(history.getStartTime());
+                long l = endTime.getTime() - startTime.getTime();
+                long hour = l / (1000 * 60 * 60);
+                long min = ((l / (60 * 1000)) - hour * 60);
+                String result;
+                if (hour >= 1) {
+                    result = hour + " h" + min + "min";
+                } else {
+                    result = min + "min";
+                }
+                history.setDuration(result);
+                saveHistory(history);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private void saveHistory(History history) {
+        String historyString = (String) (sharedPreferenceUtil.get("history", "history", MainActivity.this));
+        if (historyString == null) {
+            historyList = new ArrayList<>();
+        } else {
+            historyList = (ArrayList<History>) SharedPreferenceUtil.String2Object(historyString);
+        }
+        historyList.add(history);
+        sharedPreferenceUtil.save("history", "history", SharedPreferenceUtil.Object2String(historyList), MainActivity.this);
+    }
 }
 
