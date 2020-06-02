@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.ses3a.u_argo.tools.TitleView
+        android:id="@+id/titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
     <com.mapbox.vision.ar.view.gl.VisionArView
         android:id="@+id/mapbox_ar_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="48sp"/>
+
     <Button
         android:id="@+id/normalMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="normalMap"
-        android:layout_margin="10sp"/>
+        android:layout_marginTop="55sp" />
 
 </FrameLayout>

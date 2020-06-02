@@ -1,5 +1,7 @@
 package com.ses3a.u_argo;
+import com.ses3a.u_argo.tools.CustomToast;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -54,9 +56,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final LatLng BOUND_CORNER_SE = new LatLng(-33.889531, 151.206090);
     private static final LatLngBounds RESTRICTED_BOUNDS_AREA = new LatLngBounds.Builder().include(BOUND_CORNER_NW).include(BOUND_CORNER_SE).build();
 
+    private CustomToast ToastCustom;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //ToastCustom.getInstance(this).show("Let’s get into AR mode, please choose one building you want to go", 8000);
 
         // Mapbox access token is configured here. This needs to be called either in your application
         // object or in the same activity which contains the mapview.

@@ -16,4 +16,6 @@
 
     <string name="start_name">Start Point</string>
     <string name="end_name">Building 5</string>
+    <string name="tip_guide">Let’s get into AR-mode navigation, please choose one building you wanna go in the map</string>
+    <string name="tips">Tips:</string>
 </resources>

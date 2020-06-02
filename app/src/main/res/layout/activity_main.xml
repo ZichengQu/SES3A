@@ -10,7 +10,7 @@
 
     <include
         android:id="@+id/titlebar"
-        layout="@layout/layout_custom_actionbar"
+        layout="@layout/layout_no_actionbar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
@@ -33,12 +33,72 @@
         mapbox:mapbox_cameraZoomMin="14"
         mapbox:mapbox_cameraTilt="45"
         >
-        <Button
-            android:id="@+id/btn_history"
-            android:layout_width="180sp"
-            android:layout_height="50sp"
-            android:text="history"
-            android:layout_margin="10sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:background="@drawable/round_bg"
+            android:padding="25dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvToastTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/tips"
+                android:textColor="#000000"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tvToastContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="3dp"
+                android:fontFamily="sans-serif-condensed-light"
+                android:text="@string/tip_guide"
+                android:textColor="#000000"
+                android:lineHeight="20dp"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_margin="10dp"
+            android:layout_gravity="bottom"
+            android:gravity="right">
+
+<!--            <Button-->
+<!--                android:id="@+id/btn_history"-->
+<!--                android:layout_width="120sp"-->
+<!--                android:layout_height="50sp"-->
+<!--                android:text="history"-->
+<!--                android:layout_margin="10sp"/>-->
+
+            <Button
+                android:id="@+id/btn_history"
+                android:layout_width="60sp"
+                android:layout_height="60sp"
+                android:layout_margin="10sp"
+                android:background="@drawable/circle"/>
+
+            <ImageView
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:layout_alignStart="@+id/btn_history"
+                android:layout_alignTop="@+id/btn_history"
+                android:layout_alignEnd="@+id/btn_history"
+                android:layout_alignBottom="@+id/btn_history"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/ic_history" />
+        </RelativeLayout>
 
     </com.mapbox.mapboxsdk.maps.MapView>
 
