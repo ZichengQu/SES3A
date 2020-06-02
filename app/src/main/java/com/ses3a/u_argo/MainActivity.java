@@ -3,6 +3,7 @@ import com.ses3a.u_argo.tools.CustomToast;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -288,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         historyList.add(history);
         sharedPreferenceUtil.save("history", "history", SharedPreferenceUtil.Object2String(historyList), MainActivity.this);
+        sharedPreferenceUtil.remove("historyInstance", "historyInstance", MainActivity.this);
     }
 }
 

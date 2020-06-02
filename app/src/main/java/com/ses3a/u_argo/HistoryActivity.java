@@ -37,4 +37,10 @@ public class HistoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(cusAdapter);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        System.out.println("STOP!!!!!");
+    }
 }

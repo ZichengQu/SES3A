@@ -125,8 +125,8 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         Date startDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String startDateString = sdf.format(startDate);
-        String duration = "~";
-        String cal = getCaloriesConsumed() + "k";
+        String duration = "";
+        String cal = getCaloriesConsumed() + "kcal";
         History history = new History(startBuilding, destinationBuilding, startDateString, duration, cal);
         saveHistory(history);
 

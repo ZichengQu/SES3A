@@ -62,4 +62,9 @@ public class SharedPreferenceUtil {
             return null;
         }
     }
+
+    public void remove(String fileKey, String key, Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(fileKey, Activity.MODE_PRIVATE);
+        sharedPreferences.edit().remove(key).commit();
+    }
 }
