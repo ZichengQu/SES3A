@@ -16,6 +16,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 // classes needed to initialize map
@@ -81,6 +82,7 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
     // variables needed to initialize navigation
     private Button startButton;
     private MapboxNavigation navigation;
+    SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil();
 
     //Restrict the area bounds displayed.
     private static final LatLng BOUND_CORNER_NW = new LatLng(-33.879520, 151.194502);
@@ -93,6 +95,8 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
     final double[] distance = {0.0};
     final double[] duration = {0.0};
 
+    private History history = new History();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +107,6 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
         mapView.getMapAsync(this);
 
         navigation = new MapboxNavigation(this, getString(R.string.mapbox_access_token));
-
     }
 
     @Override
@@ -274,6 +277,22 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
                         Log.e(TAG, "Error: " + throwable.getMessage());
                     }
                 });
+        //add history
+        LatLng op = new LatLng(originPoint.latitude(), originPoint.longitude());
+        LatLng dp = new LatLng(destinationPoint.latitude(), destinationPoint.longitude());
+        String startBuilding = LocationUtil.getBuildingName(op);
+        String destinationBuilding = LocationUtil.getBuildingName(dp);
+        Date startDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String startDateString = sdf.format(startDate);
+        String duration = "";
+        String cal = "";
+        history = new History(startBuilding, destinationBuilding, startDateString, duration, cal);
+        String historyInstance = (String) (sharedPreferenceUtil.get("historyInstance", "historyInstance", NormalMap.this));
+        History historyIns = (History) SharedPreferenceUtil.String2Object(historyInstance);
+        if (historyIns != null) {
+            history.setStartTime(historyIns.getStartTime());
+        }
     }
 
     /**
@@ -292,6 +311,7 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
             k = 0.1875;
         }
         double kCal = weight * (duration[0] / 60) * k;
+        System.out.println(kCal);
         return Double.parseDouble(new DecimalFormat("#.00").format(kCal)); // Return the calories in KCal.
     }
 
@@ -348,6 +368,9 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
     protected void onPause() {
         super.onPause();
         mapView.onPause();
+        String cal = getCaloriesConsumed() + "kcal";
+        history.setCalories(cal);
+        saveHistory(history);
     }
 
     @Override
@@ -392,5 +415,9 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     public void onNavigationReady(boolean isRunning) {
         Log.d(TAG, "onNavigation: Ready");
+    }
+
+    private void saveHistory(History history) {
+        sharedPreferenceUtil.save("historyInstance", "historyInstance", SharedPreferenceUtil.Object2String(history), NormalMap.this);
     }
 }

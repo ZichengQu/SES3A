@@ -26,6 +26,9 @@ public class HistoryActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         historyList = (ArrayList<History>) SharedPreferenceUtil.String2Object((String) (sharedPreferenceUtil.get("history", "history", HistoryActivity.this)));
+        if (historyList == null) {
+            historyList = new ArrayList<>();
+        }
         initRecyclerView();
     }
 
@@ -41,6 +44,5 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        System.out.println("STOP!!!!!");
     }
 }

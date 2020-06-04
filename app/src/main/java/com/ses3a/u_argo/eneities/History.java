@@ -22,6 +22,9 @@ public class History implements Serializable {
         this.title=startTime;
     }
 
+    public History() {
+    }
+
     public String getStartPoint() {
         return startPoint;
     }

@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Bundle destination = new Bundle();
                         destination.putDouble("latitude", startPoint.getLatitude());
                         destination.putDouble("longitude", startPoint.getLongitude());
-                        intent.putExtra("destination",destination);
+                        intent.putExtra("destination", destination);
 
                         startActivity(intent);
                     }
@@ -282,10 +282,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     private void saveHistory(History history) {
         String historyString = (String) (sharedPreferenceUtil.get("history", "history", MainActivity.this));
-        if (historyString == null) {
+        historyList = (ArrayList<History>) SharedPreferenceUtil.String2Object(historyString);
+        if (historyList == null) {
             historyList = new ArrayList<>();
-        } else {
-            historyList = (ArrayList<History>) SharedPreferenceUtil.String2Object(historyString);
         }
         historyList.add(history);
         sharedPreferenceUtil.save("history", "history", SharedPreferenceUtil.Object2String(historyList), MainActivity.this);

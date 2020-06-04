@@ -104,6 +104,7 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
 
     //history util
     SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil();
+    private History history = new History();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,9 +127,8 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String startDateString = sdf.format(startDate);
         String duration = "";
-        String cal = getCaloriesConsumed() + "kcal";
-        History history = new History(startBuilding, destinationBuilding, startDateString, duration, cal);
-        saveHistory(history);
+        String cal = "";
+        history = new History(startBuilding, destinationBuilding, startDateString, duration, cal);
 
         //Button to 2D navigation with destination
         final Button normalMap = findViewById(R.id.normalMap);
@@ -175,6 +175,9 @@ public class ArActivity extends BaseActivity implements RouteListener, ProgressC
         stopVisionManager();
         stopNavigation();
         //Log.d(TAG, "onZCQStop: " + getCaloriesConsumed());
+        String cal = getCaloriesConsumed() + "kcal";
+        history.setCalories(cal);
+        saveHistory(history);
     }
 
     private void startVisionManager() {
