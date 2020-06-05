@@ -25,9 +25,9 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
 
         recyclerView = findViewById(R.id.recyclerView);
-        historyList = (ArrayList<History>) SharedPreferenceUtil.String2Object((String) (sharedPreferenceUtil.get("history", "history", HistoryActivity.this)));
-        if (historyList == null) {
-            historyList = new ArrayList<>();
+        String historyString = (String) (sharedPreferenceUtil.get("historys", "historys", HistoryActivity.this));
+        if (historyString != null) {
+            historyList = (ArrayList<History>) SharedPreferenceUtil.String2Object(historyString);
         }
         initRecyclerView();
     }

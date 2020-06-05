@@ -289,9 +289,10 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
         String cal = "";
         history = new History(startBuilding, destinationBuilding, startDateString, duration, cal);
         String historyInstance = (String) (sharedPreferenceUtil.get("historyInstance", "historyInstance", NormalMap.this));
-        History historyIns = (History) SharedPreferenceUtil.String2Object(historyInstance);
-        if (historyIns != null) {
-            history.setStartTime(historyIns.getStartTime());
+        if (historyInstance != null) {
+            History historyIns = (History) SharedPreferenceUtil.String2Object(historyInstance);
+            if (historyIns.getStartTime() != null)
+                history.setStartTime(historyIns.getStartTime());
         }
     }
 
@@ -368,9 +369,12 @@ public class NormalMap extends AppCompatActivity implements OnMapReadyCallback, 
     protected void onPause() {
         super.onPause();
         mapView.onPause();
-        String cal = getCaloriesConsumed() + "kcal";
-        history.setCalories(cal);
-        saveHistory(history);
+        if (history.getStartTime() != null) {
+            String cal = getCaloriesConsumed() + "kcal";
+            history.setCalories(cal);
+            saveHistory(history);
+        }
+        System.out.println(history);
     }
 
     @Override
